@@ -4,7 +4,9 @@ import router from './router';
 
 Vue.config.productionTip = false
 
+Vue.prototype.$bus = new Vue() // 给Vue添加一个 $bus 事件总线
+
 new Vue({
-  render: h => h(App),
-  router
+    render: h => h(App),
+    router
 }).$mount('#app')

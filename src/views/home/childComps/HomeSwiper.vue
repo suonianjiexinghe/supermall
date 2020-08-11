@@ -3,7 +3,7 @@
     <swiper>
       <swiper-item v-for="item in banners" :key="item.index">
         <a :href="item.link"> 
-          <img :src="item.image">
+          <img :src="item.image" @load="imageLoad">
         </a>
       </swiper-item>
     </swiper>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+// 引入轮播图组件
 import {Swiper, SwiperItem} from 'components/common/swiper'
 
  export default {
@@ -20,6 +21,19 @@ import {Swiper, SwiperItem} from 'components/common/swiper'
        type: Array,
        define() {
          return []
+       }
+     }
+   },
+   data() {
+     return {
+       isLoad: false
+     }
+   },
+   methods: {
+     imageLoad() {
+       if(!this.isLoad) {
+         this.$emit('swiperImageLoad')
+         this.isLoad = true
        }
      }
    },

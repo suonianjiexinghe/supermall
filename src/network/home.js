@@ -7,6 +7,7 @@ export function getHomeMultidata() {
     })
 }
 
+// 封装了首页商品的网络请求  第七步
 export function getHomeGoods(type, page) {
     return request({
         url: 'http://152.136.185.210:8000/api/z8/home/data',

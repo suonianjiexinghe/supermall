@@ -29,9 +29,13 @@
     },
     mounted() {
       // 1.创建BScroll对象
+      //probe 侦测  
+      // 0,1 都是不侦测实时位置
+      // 2 在手指滚动的过程中侦测，手指离开后的惯性滚动过程中不侦测
+      // 3 只要是滚动，都侦测
       this.scroll = new BScroll(this.$refs.wrapper, {
         click: true,
-        probeType: this.probeType,
+        probeType: this.probeType,  
         pullUpLoad: this.pullUpLoad
       })
 
@@ -49,11 +53,14 @@
     },
     methods: {
       scrollTo(x, y, time=300) {
-        this.scroll.scrollTo(x, y, time)
+        this.scroll && this.scroll.scrollTo(x, y, time)
       },
       finishPullUp() {
         this.scroll.finishPullUp()
-      }
+      },
+      refresh() {
+        this.scroll && this.scroll.refresh()
+      },
     }
   }
 </script>
