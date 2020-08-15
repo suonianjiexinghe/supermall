@@ -1,16 +1,15 @@
 <template>
-  <div class="home wrapper" >
+  <div id="home" class="wrapper" >
     <nav-bar class="home-nav"><slot slot="center">购物街</slot></nav-bar>
     <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl1"  v-show="isTabFixed"></tab-control>
-
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
-      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl"></tab-control>
-      <goods-list :goods="showGoods" />
+      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl" ></tab-control>
+      <goods-list :goods="showGoods" ref="goodsList"/>
     </scroll>
-    <back-top @click.native="backClick" v-show="isShowBacktop"/>
+    <back-top @click.native="backClick" v-show="isShowBacktop"/><!--click.native(直接监听组件的原生点击)-->
   </div>
 </template>
 
@@ -28,7 +27,8 @@ import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backtop/BackTop'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网络请求
-
+import {debounce} from 'common/utils'                        //--------------防抖函数
+import {imgListenerMixin,backTopMixin} from 'common/mixin'
 
 
 
@@ -56,17 +56,35 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
        currentType: 'pop',
        isShowBacktop: false,
        tabOffsetTop: 0,
-       isTabFixed: false
+       goodsOffsetTop: 0,
+       saveY: 0,
+       isTabFixed: false,
      }
    },
+   mixins: [imgListenerMixin,backTopMixin],
    computed: {
      showGoods() {
        return this.goods[this.currentType].list
      },
 
    },
+    activated() {
+      //进入该页面时的回调函数
+      //回到离开前保存的Y值的位置 
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      this.$refs.scroll.refresh()
+    },
+    deactivated() {
+      //离开该页面时的回调函数
+      //1.保存Y值
+      this.saveY = this.$refs.scroll.getScrollY()
+
+      //2.取消全局事件的监听
+      this.$bus.$off('itemImgLoad', this.imgListener)
+    },
     // 生命周期函数 页面被创建后执行的请求数据
    created() {
+      //将网络请求getHomeData()封装到methods中再调用methods中的getHomeData()（之所以要在created中调用是因为网络请求需要在组件创建好的时候发送）
     //  1. 请求多个数据
       this.getHomeMultidata(),
      // 2.请求商品数据
@@ -75,12 +93,13 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
       this.getHomeGoods('sell')
    },
    mounted() {
-           // 3. 监听item中图片加载完成
-      this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh()
+     // debounce 防抖 
+     const refresh = debounce(this.$refs.scroll.refresh, 200)
+      // 3. 监听item中图片加载完成
+      this.$bus.$on('itemImgLoad', () => {
+        refresh()
       })
-     
-   },
+   },  
    methods: {
       /* 
         事件监听相关方法
@@ -99,7 +118,8 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
        }
        this.$refs.tabControl1.currentIndex = index;
        this.$refs.tabControl.currentIndex = index;
-
+       this.goodsOffset()
+      //  console.log(this.$refs.scroll.scroll.y);
      },
      backClick() {
        this.$refs.scroll.scroll.scrollTo(0, 0, 500)
@@ -119,10 +139,15 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
       this.$refs.scroll.scroll.refresh()
      },
      swiperImageLoad() {
-             // 获取tabControl的offsetTop
+        // 获取tabControl的offsetTop
         // 所有的组件都有一个属性$el：用于获取组件中的元素
        this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
-       console.log(this.tabOffsetTop);
+     },
+     goodsOffset() {
+      this.goodsOffsetTop = this.$refs.goodsList.$el.offsetTop
+      if(-this.goodsOffsetTop > parseInt(this.$refs.scroll.scroll.y) ) {
+        this.$refs.scroll.scroll.scrollTo(0, -this.goodsOffsetTop, 500)
+      }
      },
      
       /** 
@@ -150,7 +175,7 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
 </script>
 
 <style scoped>
-  .home {    
+  #home {    
     height: 100vh;   /* vh 视图高度 vw视图宽度 */
     position: relative;
   }

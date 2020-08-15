@@ -24,7 +24,7 @@
     data() {
       return {
         scroll: null,
-        message: '哈哈哈'
+        message: '哈哈哈',
       }
     },
     mounted() {
@@ -40,27 +40,36 @@
       })
 
       // 2.监听滚动的位置
-      this.scroll.on('scroll', (position) => {
-        // console.log(position);
-        this.$emit('scroll', position)
-      })
+      if (this.probeType === 2 || this.probeType === 3) {
+        this.scroll.on('scroll', (position) => {
+          // console.log(position);
+          this.$emit('scroll', position)
+        })
+      }
 
-      // 3.监听上拉事件
-      this.scroll.on('pullingUp', () => {
-        // console.log("加载更多");
-        this.$emit('pullingUp')
-      })
+      // 3.监听scroll滚动到底部
+      if (this.pullUpLoad) {
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {
+      //封装 this.scroll.scrollTo()方法让父组件调用
+      // this.scroll.scrollTo(0,0)  返回页面顶部(有3个参数 x:返回到x轴的位置 ，y:返回到y轴的位置 ，time:返回过程所需的时间)
       scrollTo(x, y, time=300) {
         this.scroll && this.scroll.scrollTo(x, y, time)
       },
-      finishPullUp() {
-        this.scroll.finishPullUp()
-      },
+      //this.scroll &&  判段是否有scroll对象，没有则不执行后面的代码
       refresh() {
         this.scroll && this.scroll.refresh()
       },
+      finishPullUp() {
+        this.scroll && this.scroll.finishPullUp()
+      },
+      getScrollY() {
+        return this.scroll ? this.scroll.y : 0
+      }
     }
   }
 </script>
