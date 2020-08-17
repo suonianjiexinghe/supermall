@@ -8,16 +8,33 @@
 export default {
   name: 'Toast',
   props: {
-    message: {
-      type: String,
-      default: ''
+  //   message: {
+  //     type: String,
+  //     default: ''
+  //   },
+  //   toastShow: {
+  //     type: Boolean,
+  //     default: false
+  //   }
+  },
+    data() {
+      return {
+        message: '',
+        toastShow: false
+      }
     },
-    toastShow: {
-      type: Boolean,
-      default: false
+    methods: {
+      //直接调用此方法即可显示提示信息
+      showToast(message = '请传入信息！', duration = 500) {
+        console.log('----');
+        this.toastShow = true;
+        this.message = message;
+        setTimeout(() => {
+          this.toastShow = false;
+          this.message = ''
+        }, duration)
+      }
     }
-  }
-
 }
 </script>
 

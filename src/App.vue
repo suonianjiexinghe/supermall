@@ -10,6 +10,8 @@
 <script>
   // 引入整体的布局组件     -----------第一步底部组件
   import MainTabBar from  'components/content/mainTabbar/MainTabBar'
+
+  
   export default {
     name: 'App',
     components: {

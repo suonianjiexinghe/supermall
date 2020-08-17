@@ -71,14 +71,15 @@ import {imgListenerMixin,backTopMixin} from 'common/mixin'
     activated() {
       //进入该页面时的回调函数
       //回到离开前保存的Y值的位置 
-      this.$refs.scroll.scrollTo(0, this.saveY, 0)
       this.$refs.scroll.refresh()
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+
     },
     deactivated() {
       //离开该页面时的回调函数
       //1.保存Y值
       this.saveY = this.$refs.scroll.getScrollY()
-
+      
       //2.取消全局事件的监听
       this.$bus.$off('itemImgLoad', this.imgListener)
     },

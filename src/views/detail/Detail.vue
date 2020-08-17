@@ -2,9 +2,6 @@
   <div id="detail">
     <detail-navbar class="detail-navbar" @titleClick="titleClick" ref="navbar"/>
     <scroll class="detail-scroll" ref="scroll" :probe-type="3" @probeScroll="probeScroll">
-      <ul>
-        <li v-for="item in $store.state.cartList" :key="item.index">{{ item }}</li>
-      </ul>
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop :shop="shop"/>
@@ -15,7 +12,8 @@
     </scroll>
     <detail-bottombar @addToCart="addToCart"/>
     <back-top @click.native="backTop" v-show="isShow"/>
-    <toast :message="message" :toast-show="toastShow"/>
+    <div class="gwc" v-show="carsShow">{{cars}}</div>
+    <!-- <toast :message="message" :toast-show="toastShow"/> -->
   </div>
 </template>
 
@@ -30,12 +28,14 @@ import DetailComment from './childComps/DetailComment'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
 import DetailBottombar from './childComps/DetailBottombar'
-import Toast from 'components/common/toast/Toast'
+// import Toast from 'components/common/toast/Toast'
 
 import {getDetail,Goods,Shop,getRecommend} from 'network/detail'
 import {imgListenerMixin,backTopMixin} from 'common/mixin'
 import {debounce} from 'common/utils'
- import {TOP_DISTANCE} from "common/const";
+//  import {TOP_DISTANCE} from 'common/const'
+
+//  import { mapActions } from 'vuex'
 
 export default {
   name: 'Detail',
@@ -50,7 +50,7 @@ export default {
     GoodsList,
     Scroll,
     DetailBottombar,
-    Toast
+    // Toast
   },
   data() {
     return {
@@ -65,8 +65,10 @@ export default {
       themeTopY: [],
       getThemeTopY: null,
       currentIndex: 0,
-      toastShow: false,
-      message: ''
+      cars: null,
+      carsShow: false
+      // toastShow: false,
+      // message: ''
     }
   },
   mixins: [imgListenerMixin,backTopMixin],
@@ -113,6 +115,7 @@ export default {
     this.$bus.$off('itemImgLoad',this.imgListener)
   },
   methods: {
+    // ...mapActions(['addToCart']),
     imgListLoad() {
       this.newRefresh()
       this.getThemeTopY()
@@ -121,7 +124,6 @@ export default {
       this.$refs.scroll.scrollTo(0 , -this.themeTopY[index], 200)
     },
     probeScroll(position) {
-      //是否显示bacTop按钮
 
       const positionY = -position.y
 
@@ -140,15 +142,39 @@ export default {
 
     //加入购物车
     addToCart() {
+      // 1.获取购物车需要展示的信息
       const cartData = {}
       cartData.image = this.topImages[0]
       cartData.title = this.goods.title
       cartData.desc = this.goods.desc
       cartData.price = this.goods.realPrice
       cartData.iid = this.iid
+      // 2.将商品添加到购物车里
+      this.$store.dispatch('addToCart', cartData).then(res => {
+        this.toastShow = true;
+        this.message = res
 
-      // this.$store.commit('addToCart', cartData)
-      this.$store.dispatch('addToCart', cartData)
+        setTimeout(() => {
+          this.toastShow = false
+          this.message = ''
+          
+        },1000)
+        this.carsShow = true
+        this.cars = res
+        if(this.carsShow == true) {
+          setTimeout(() => {
+            this.carsShow = false
+          }, 1000);
+        }
+        
+      })
+      // this.$store.dispatch('addToCart', cartData).then(res =>{
+      //   console.log(res);
+      // })
+
+      // this.addToCarts(cartData).then(res => {
+      //   console.log(res);
+      // })
       // this.$store.dispatch('addToCart', cartData).then(res => {
       //   this.toastShow = true;
       //   this.message = res
@@ -158,7 +184,7 @@ export default {
       //     this.message = ''
       //   },1000)
       // })
-    }
+    },
   }
 }
 </script>
@@ -180,5 +206,19 @@ export default {
   .detail-scroll {
     position: relative;
     height: calc(100% - 44px - 49px);
+  }
+  .gwc {
+    position: fixed;
+    flex: 1;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    transform: translate(-50%,-50%);
   }
 </style>
