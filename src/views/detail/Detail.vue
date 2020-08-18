@@ -1,6 +1,6 @@
 <template>
   <div id="detail">
-    <detail-navbar class="detail-navbar" @titleClick="titleClick" ref="navbar"/>
+    <detail-nav-bar class="detail-navbar" @titleClick="titleClick" ref="navbar"/>
     <scroll class="detail-scroll" ref="scroll" :probe-type="3" @probeScroll="probeScroll">
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
@@ -10,7 +10,7 @@
       <detail-comment :comment="comment" ref="comment"/>
       <goods-list :goods="recommend" ref="recommend"/>
     </scroll>
-    <detail-bottombar @addToCart="addToCart"/>
+    <detail-bottom-bar @addToCart="addToCart"/>
     <back-top @click.native="backTop" v-show="isShow"/>
     <div class="gwc" v-show="carsShow">{{cars}}</div>
     <!-- <toast :message="message" :toast-show="toastShow"/> -->
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import DetailNavbar from './childComps/DetailNavbar'
+import DetailNavBar from './childComps/DetailNavBar'
 import DetailSwiper from './childComps/DetailSwiper'
 import DetailBaseInfo from './childComps/DetailBaseInfo'
 import DetailShop from './childComps/DetailShop'
@@ -27,7 +27,7 @@ import DetailParams from './childComps/DetailParams'
 import DetailComment from './childComps/DetailComment'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import DetailBottombar from './childComps/DetailBottombar'
+import DetailBottomBar from './childComps/DetailBottomBar'
 // import Toast from 'components/common/toast/Toast'
 
 import {getDetail,Goods,Shop,getRecommend} from 'network/detail'
@@ -40,7 +40,7 @@ import {debounce} from 'common/utils'
 export default {
   name: 'Detail',
   components: {
-    DetailNavbar,
+    DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
     DetailShop,
@@ -49,7 +49,7 @@ export default {
     DetailComment,
     GoodsList,
     Scroll,
-    DetailBottombar,
+    DetailBottomBar,
     // Toast
   },
   data() {
