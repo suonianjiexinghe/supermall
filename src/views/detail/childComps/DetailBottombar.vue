@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'DetailBottombar',
+  name: 'DetailBottomBar',
   methods: {
     addToCart() {
       this.$emit('addToCart')
