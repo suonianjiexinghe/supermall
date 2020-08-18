@@ -10,7 +10,7 @@
       <detail-comment :comment="comment" ref="comment"/>
       <goods-list :goods="recommend" ref="recommend"/>
     </scroll>
-    <detail-bottom-bar @addToCart="addToCart"/>
+    <detail-bottombar @addToCart="addToCart"/>
     <back-top @click.native="backTop" v-show="isShow"/>
     <div class="gwc" v-show="carsShow">{{cars}}</div>
     <!-- <toast :message="message" :toast-show="toastShow"/> -->
@@ -27,7 +27,7 @@ import DetailParams from './childComps/DetailParams'
 import DetailComment from './childComps/DetailComment'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import DetailBottomBar from './childComps/DetailBottomBar'
+import DetailBottombar from './childComps/DetailBottombar'
 // import Toast from 'components/common/toast/Toast'
 
 import {getDetail,Goods,Shop,getRecommend} from 'network/detail'
@@ -49,7 +49,7 @@ export default {
     DetailComment,
     GoodsList,
     Scroll,
-    DetailBottomBar,
+    DetailBottombar,
     // Toast
   },
   data() {
