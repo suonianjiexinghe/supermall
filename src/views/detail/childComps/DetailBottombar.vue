@@ -41,7 +41,7 @@ export default {
     left: 0;
     right: 0;
     background: #fff;
-    box-shadow: 0 1px 3px rgba(100,100,100,.8);
+    box-shadow: 0 1px 3px rgba(100,100,100,.7);
     display: flex; 
     justify-content: space-between;
     z-index: 9;
