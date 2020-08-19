@@ -30,7 +30,7 @@ import {getHomeMultidata, getHomeGoods} from 'network/home'  // ------------网�
 import {debounce} from 'common/utils'                        //--------------防抖函数
 import {imgListenerMixin,backTopMixin} from 'common/mixin'
 
-
+ 
 
  export default {
    name: 'Home',
